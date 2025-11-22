@@ -230,45 +230,46 @@
                 <div class="hero-right" id="apply">
                     <div class="form-card">
                         <div class="form-header">
-                            <h2>Request Your Loan Offer</h2>
-                            <p>No obligation. We’ll contact you with your options.</p>
+                            <h2>Confirm Your Loan Application</h2>
+                            <p>Fill in your details and confirm via WhatsApp.</p>
                         </div>
 
-                        <div class="form-note">No impact on your credit score for an enquiry.</div>
+                        <div class="form-note">Your details will be sent to Maano via WhatsApp for confirmation.</div>
 
-                        <!-- Front-end only demo form -->
-                        <form class="loan-form">
+                        <!-- Front-end form sending details to WhatsApp -->
+                        <form id="loanForm" class="loan-form">
                             <div class="form-row">
                                 <label>
                                     First name
-                                    <input type="text" placeholder="Jane" required>
+                                    <input id="firstName" type="text" placeholder="Jane" required>
                                 </label>
                                 <label>
                                     Last name
-                                    <input type="text" placeholder="Doe" required>
+                                    <input id="lastName" type="text" placeholder="Doe" required>
                                 </label>
                             </div>
 
                             <div class="form-row">
                                 <label>
                                     Email
-                                    <input type="email" placeholder="jane@email.com" required>
+                                    <input id="email" type="email" placeholder="jane@email.com" required>
                                 </label>
                                 <label>
                                     Phone (+27)
-                                    <input type="tel" placeholder="+27 76 880 2199" required>
+                                    <input id="phone" type="tel" placeholder="+27 76 880 2199" required>
                                 </label>
                             </div>
 
                             <div class="form-row">
                                 <label>
                                     Loan amount (ZAR)
-                                    <input type="number" min="200" max="20000" placeholder="e.g. 1500" required>
+                                    <input id="amount" type="number" min="200" max="20000" placeholder="e.g. 1500"
+                                        required>
                                 </label>
                                 <label>
                                     Purpose
-                                    <select>
-                                        <option>Select</option>
+                                    <select id="purpose">
+                                        <option value="">Select</option>
                                         <option>Emergency expense</option>
                                         <option>Transport</option>
                                         <option>Rent / Bills</option>
@@ -281,21 +282,21 @@
                             <div class="form-row">
                                 <label>
                                     Net monthly income (ZAR)
-                                    <input type="number" placeholder="e.g. 8500" required>
+                                    <input id="income" type="number" placeholder="e.g. 8500" required>
                                 </label>
                                 <label>
                                     Pay date
-                                    <input type="date" required>
+                                    <input id="payDate" type="date" required>
                                 </label>
                             </div>
 
                             <label class="checkbox">
-                                <input type="checkbox" required>
+                                <input id="consent" type="checkbox" required>
                                 <span>I agree to be contacted about my enquiry and accept Maano’s Terms &
                                     Privacy.</span>
                             </label>
 
-                            <button type="submit" class="btn-submit">See My Offer</button>
+                            <button type="submit" class="btn-submit">Confirm</button>
 
                             <p class="form-small">
                                 For faster response, call or WhatsApp:
@@ -453,6 +454,45 @@
             </div>
         </footer>
     </div>
+
+    <!-- WhatsApp confirmation script -->
+    <script>
+        // Change this to your main WhatsApp number (no +, no spaces)
+        const WHATSAPP_NUMBER = "27768802199"; // 076 880 2199
+
+        document.getElementById("loanForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const firstName = document.getElementById("firstName").value.trim();
+            const lastName = document.getElementById("lastName").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const amount = document.getElementById("amount").value.trim();
+            const purpose = document.getElementById("purpose").value || "Not specified";
+            const income = document.getElementById("income").value.trim();
+            const payDate = document.getElementById("payDate").value;
+
+            // Simple validation guard (should already be enforced by required attributes)
+            if (!firstName || !lastName || !email || !phone || !amount || !income || !payDate) {
+                alert("Please fill in all required fields before confirming.");
+                return;
+            }
+
+            let message = "New loan application (online form confirmation):%0A%0A";
+            message += "Name: " + firstName + " " + lastName + "%0A";
+            message += "Email: " + email + "%0A";
+            message += "Phone: " + phone + "%0A";
+            message += "Loan amount: R" + amount + "%0A";
+            message += "Purpose: " + purpose + "%0A";
+            message += "Net monthly income: R" + income + "%0A";
+            message += "Pay date: " + payDate + "%0A";
+
+            const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + message;
+
+            // Open WhatsApp with pre-filled message
+            window.open(url, "_blank");
+        });
+    </script>
 </body>
 
 </html>
